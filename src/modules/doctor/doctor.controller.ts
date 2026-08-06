@@ -2,7 +2,7 @@ import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
 import { DoctorService } from './doctor.service';
 import { Auth, User } from '@common/decorators';
 import { DoctorFactoryService } from './factory';
-import { UpdatedDoctorDto } from '@modules/auth/dto/update-auth.dto';
+import { UpdatedDoctorDto, UpdatedPatientDto } from '@modules/auth/dto/update-auth.dto';
 import { log } from 'console';
 import { CreateClinicDto } from './dto/create-clinic.dto';
 import { UpdatedClinicDto } from './dto/update-clinic.dto';
@@ -52,17 +52,16 @@ export class DoctorController {
       data: createdClinic,
     };
   }
-  @Put('clinic/:id')
+  @Put('clinic')
   async updateClinic(
     @Body() updateClinicDto: UpdatedClinicDto,
-    @Param('id') id: string,
     @User() user: any,
   ) {
     const clinic = await this.doctorFactoryService.updateClinic(
       updateClinicDto,
-      id,
+      user,
     );
-    const updatedClinic = await this.doctorService.updateClinic(clinic, id);
+    const updatedClinic = await this.doctorService.updateClinic(clinic, user);
     return {
       message: 'clinic updated successfully',
       success: true,
@@ -78,5 +77,23 @@ export class DoctorController {
   data: clinic,
  };
   }
+ @Put('patient/:id')
+ async updatePatient(
+  @Body() updatePatientDto: UpdatedPatientDto,
+  @Param('id') id: string,
+  @User() user: any,
+ ) {
+  const patient = await this.doctorFactoryService.UpdatePatient(
+   updatePatientDto,
+   user,
+   id,
+  );
+  const updatedPatient = await this.doctorService.updatePatient(patient, id);
+  return {
+   message: 'patient updated successfully',
+   success: true,
+   data: updatedPatient,
+  };
+ }
 
 }

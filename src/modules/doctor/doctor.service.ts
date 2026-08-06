@@ -1,5 +1,9 @@
-import { ClinicRepository, DoctorRepository } from '@models/index';
-import { Doctor } from '@modules/auth/entities/auth.entity';
+import {
+  ClinicRepository,
+  DoctorRepository,
+  PatientRepository,
+} from '@models/index';
+import { Doctor, Patient } from '@modules/auth/entities/auth.entity';
 import {
   ConflictException,
   Injectable,
@@ -13,10 +17,17 @@ export class DoctorService {
   constructor(
     private readonly doctorRepo: DoctorRepository,
     private readonly clinicRepo: ClinicRepository,
+    private readonly patientRepo: PatientRepository,
   ) {}
 
   async findOne(id: string) {
-    const doctor = await this.doctorRepo.getOne({ _id: id });
+    const doctor = await this.doctorRepo.getOne(
+      { _id: id },
+      {},
+      {
+        populate: { path: 'clinicId' },
+      },
+    );
     if (!doctor) {
       throw new Error('Doctor not found');
     }
@@ -40,14 +51,21 @@ export class DoctorService {
     if (clinicExist) {
       throw new ConflictException('clinic already exist');
     }
-    return await this.clinicRepo.create(clinic);
+    const createdClinic = await this.clinicRepo.create(clinic);
+    await this.doctorRepo.update(
+      { _id: doctor._id },
+      {
+        clinicId: createdClinic._id,
+      },
+    );
+    return createdClinic;
   }
-  async updateClinic(clinic: Clinic, id: string) {
-    const clinicExist = await this.clinicRepo.getOne({ _id: id });
+  async updateClinic(clinic: Clinic, doctor: any) {
+    const clinicExist = await this.clinicRepo.getOne({ doctorId: doctor._id });
     if (!clinicExist) {
       throw new NotFoundException('clinic not found');
     }
-    return await this.clinicRepo.update({ _id: id }, clinic, {
+    return await this.clinicRepo.update({ doctorId: doctor._id }, clinic, {
       returnDocument: 'after',
     });
   }
@@ -61,5 +79,17 @@ export class DoctorService {
       throw new NotFoundException('clinic not found');
     }
     return clinic;
+  }
+  async updatePatient(patient: Patient, id: string) {
+    const patientExist = await this.patientRepo.getOne({ _id: id });
+    if (!patientExist) {
+      throw new NotFoundException('patient not found');
+    }
+    const updatedPatient = await this.patientRepo.update({ _id: id }, patient, {
+      returnDocument: 'after',
+    });
+    const { password, otp, otpExpired, ...other } =
+      updatedPatient?.toObject() || {};
+    return other;
   }
 }

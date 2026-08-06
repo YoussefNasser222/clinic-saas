@@ -1,17 +1,22 @@
-import { ClinicRepository, DoctorRepository } from '@models/index';
-import { UpdatedDoctorDto } from '@modules/auth/dto/update-auth.dto';
-import { Doctor } from '@modules/auth/entities/auth.entity';
+import { ClinicRepository, DoctorRepository, PatientRepository } from '@models/index';
+import {
+  UpdatedDoctorDto,
+  UpdatedPatientDto,
+} from '@modules/auth/dto/update-auth.dto';
+import { Doctor, Patient } from '@modules/auth/entities/auth.entity';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { Types } from 'mongoose';
 import { CreateClinicDto } from '../dto/create-clinic.dto';
 import { Clinic } from '../entity';
 import { UpdatedClinicDto } from '../dto/update-clinic.dto';
+import { log } from 'console';
 @Injectable()
 export class DoctorFactoryService {
   constructor(
     private readonly doctorRepo: DoctorRepository,
     private readonly clinicRepo: ClinicRepository,
+    private readonly patientRepo: PatientRepository,
   ) {}
   async updateDoctor(
     updateDoctorDto: UpdatedDoctorDto,
@@ -55,10 +60,10 @@ export class DoctorFactoryService {
   }
   async updateClinic(
     updateClinicDto: UpdatedClinicDto,
-    id: string | Types.ObjectId,
+    doctor : any,
   ) {
     const clinic = new Clinic();
-    const oldClinic = await this.clinicRepo.getOne({ _id: id });
+    const oldClinic = await this.clinicRepo.getOne({ doctorId : doctor._id });
     if (!oldClinic) {
       throw new NotFoundException('Clinic not found');
     }
@@ -77,5 +82,23 @@ export class DoctorFactoryService {
     clinic.workingDays = updateClinicDto.workingDays || oldClinic.workingDays;
 
     return clinic;
+  }
+  async UpdatePatient(updatePatientDto: UpdatedPatientDto, user: any , id : string) {
+    const oldPatient = await this.patientRepo.getOne({_id : id ,clinicId : user.clinicId})
+    if(!oldPatient){
+      throw new NotFoundException("patient Not found")
+    }
+    const patient = new Patient();
+    patient.userName = updatePatientDto.userName || oldPatient.userName;
+    patient.password = await bcrypt.hash(updatePatientDto.password || oldPatient.password, 10);
+    patient.email = updatePatientDto.email || oldPatient.email;
+    patient.firstName = updatePatientDto.firstName || oldPatient.firstName;
+    patient.lastName = updatePatientDto.lastName || oldPatient.lastName;
+    patient.phoneNumber = updatePatientDto.phoneNumber || oldPatient.phoneNumber;
+    patient.otp = '';
+    patient.otpExpired = new Date();
+    patient.doctorId = user._id;
+    patient.clinicId = user.clinicId;
+    return patient;
   }
 }

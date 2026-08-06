@@ -2,6 +2,7 @@ import { Body, Controller, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateDoctorDto, CreatePatientDto, LoginDto, ResetPasswordDto } from './dto/create-auth.dto';
 import { AuthFactoryService } from './factory';
+import { Auth, User } from '@common/decorators';
 
 @Controller('auth')
 export class AuthController {
@@ -19,8 +20,9 @@ export class AuthController {
     }
   }
   @Post('register/patient')
-  async createPatient(@Body() createPatientDto: CreatePatientDto) {
-    const patient = await this.authFactoryService.createPatient(createPatientDto)
+  @Auth(["Doctor"])
+  async createPatient(@Body() createPatientDto: CreatePatientDto , @User() user : any) {
+    const patient = await this.authFactoryService.createPatient(createPatientDto , user)
     const createdPatient = await this.authService.createPatient(patient);
     return {
       message: "patient created successfully",
