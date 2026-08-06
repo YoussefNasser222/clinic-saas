@@ -15,3 +15,6 @@ export * from './admin/admin.repository';
 
 export * from './token/token.schema';
 export * from './token/token.repository';
+
+export * from './clinic/clinic.schema';
+export * from './clinic/clinic.repository';

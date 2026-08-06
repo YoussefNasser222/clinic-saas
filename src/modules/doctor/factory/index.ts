@@ -1,19 +1,21 @@
-import { DoctorRepository } from '@models/index';
+import { ClinicRepository, DoctorRepository } from '@models/index';
 import { UpdatedDoctorDto } from '@modules/auth/dto/update-auth.dto';
 import { Doctor } from '@modules/auth/entities/auth.entity';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-import { log } from 'console';
 import { Types } from 'mongoose';
-
+import { CreateClinicDto } from '../dto/create-clinic.dto';
+import { Clinic } from '../entity';
+import { UpdatedClinicDto } from '../dto/update-clinic.dto';
 @Injectable()
 export class DoctorFactoryService {
   constructor(
-    private readonly doctorRepo: DoctorRepository
+    private readonly doctorRepo: DoctorRepository,
+    private readonly clinicRepo: ClinicRepository,
   ) {}
   async updateDoctor(
     updateDoctorDto: UpdatedDoctorDto,
-    id : string | Types.ObjectId
+    id: string | Types.ObjectId,
   ) {
     const doctor = await this.doctorRepo.getOne({ _id: id });
     if (!doctor) {
@@ -35,5 +37,45 @@ export class DoctorFactoryService {
     updatedDoctor.otp = doctor.otp;
     updatedDoctor.otpExpired = doctor.otpExpired;
     return updatedDoctor;
+  }
+  async createClinic(createClinicDto: CreateClinicDto, doctor: any) {
+    const clinic = new Clinic();
+    clinic.name = createClinicDto.name;
+    clinic.description = createClinicDto.description;
+    clinic.phoneNumber = createClinicDto.phoneNumber;
+    clinic.street = createClinicDto.street;
+    clinic.email = createClinicDto.email;
+    clinic.city = createClinicDto.city;
+    clinic.governorate = createClinicDto.governorate;
+    clinic.specialization = createClinicDto.specialization;
+    clinic.consultationPrice = createClinicDto.consultationPrice;
+    clinic.doctorId = doctor._id;
+    clinic.workingDays = createClinicDto.workingDays;
+    return clinic;
+  }
+  async updateClinic(
+    updateClinicDto: UpdatedClinicDto,
+    id: string | Types.ObjectId,
+  ) {
+    const clinic = new Clinic();
+    const oldClinic = await this.clinicRepo.getOne({ _id: id });
+    if (!oldClinic) {
+      throw new NotFoundException('Clinic not found');
+    }
+    clinic.name = updateClinicDto.name || oldClinic.name;
+    clinic.description = updateClinicDto.description || oldClinic.description;
+    clinic.phoneNumber = updateClinicDto.phoneNumber || oldClinic.phoneNumber;
+    clinic.street = updateClinicDto.street || oldClinic.street;
+    clinic.email = updateClinicDto.email || oldClinic.email;
+    clinic.city = updateClinicDto.city || oldClinic.city;
+    clinic.governorate = updateClinicDto.governorate || oldClinic.governorate;
+    clinic.specialization =
+      updateClinicDto.specialization || oldClinic.specialization;
+    clinic.consultationPrice =
+      updateClinicDto.consultationPrice || oldClinic.consultationPrice;
+    clinic.doctorId = oldClinic.doctorId;
+    clinic.workingDays = updateClinicDto.workingDays || oldClinic.workingDays;
+
+    return clinic;
   }
 }
