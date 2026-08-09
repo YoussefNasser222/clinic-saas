@@ -11,6 +11,7 @@ import { DoctorModule } from './modules/doctor/doctor.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      envFilePath: ['.env'],
       load: [devConfig],
     }),
     MongooseModule.forRootAsync({
