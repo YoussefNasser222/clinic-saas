@@ -1,36 +1,41 @@
 import {
-    Model,
-    ProjectionType,
-    QueryFilter,
-    QueryOptions,
-    UpdateQuery
+  Model,
+  ProjectionType,
+  QueryFilter,
+  QueryOptions,
+  UpdateQuery,
+  HydratedDocument,
 } from 'mongoose';
 
 export class AbstractRepository<T> {
   constructor(private readonly model: Model<T>) {}
-  public async create(item: Partial<T>) {
+
+  public async create(item: Partial<T>): Promise<HydratedDocument<T>> {
     const doc = new this.model(item);
-    return doc.save();
+    return (await doc.save()) as unknown as HydratedDocument<T>;
   }
+
   public async getOne(
     filter: QueryFilter<T>,
     projection?: ProjectionType<T>,
     options?: QueryOptions<T>,
-  ) {
-    return this.model.findOne(filter, projection, options);
+  ): Promise<HydratedDocument<T> | null> {
+    return this.model.findOne(filter, projection, options) as unknown as Promise<HydratedDocument<T> | null>;
   }
+
   public async update(
     filter: QueryFilter<T>,
     updateQuery: UpdateQuery<T>,
     options?: QueryOptions<T>,
-  ) {
-    return this.model.findOneAndUpdate(filter, updateQuery, options);
+  ): Promise<HydratedDocument<T> | null> {
+    return this.model.findOneAndUpdate(filter, updateQuery, options) as unknown as Promise<HydratedDocument<T> | null>;
   }
+
   public async getAll(
     filter?: QueryFilter<T>,
     projection?: ProjectionType<T>,
     options?: QueryOptions<T>,
-  ) {
-    return this.model.find(filter, projection, options);
+  ): Promise<HydratedDocument<T>[]> {
+    return this.model.find(filter, projection, options) as unknown as Promise<HydratedDocument<T>[]>;
   }
 }
