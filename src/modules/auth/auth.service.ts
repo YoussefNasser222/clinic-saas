@@ -1,7 +1,7 @@
 import { DoctorRepository, PatientRepository, TokenRepository, UserRepository } from '@models/index';
 import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
+import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 import * as bcrypt from "bcrypt";
 import { LoginDto, ResetPasswordDto } from './dto/create-auth.dto';
 import { Doctor, Patient } from './entities/auth.entity';
@@ -51,14 +51,14 @@ export class AuthService {
     }, {
       secret: this.configService.get('JWT_SECRET'),
       expiresIn: "1d",
-    })
+    } as JwtSignOptions)
     const refreshToken = this.jwtService.sign({
       userId: user._id,
       role: user.role
     }, {
       secret: this.configService.get('JWT_SECRET'),
       expiresIn: "7d"
-    })
+    } as JwtSignOptions)
     const token = await this.tokenRepo.create({
       userId: user._id,
       refreshToken
@@ -80,14 +80,14 @@ export class AuthService {
     }, {
       secret: this.configService.get('JWT_SECRET'),
       expiresIn: "1d",
-    })
+    } as JwtSignOptions)
     const newRefreshToken = this.jwtService.sign({
       userId: user._id,
       role: user.role
     }, {
       secret: this.configService.get('JWT_SECRET'),
       expiresIn: "7d"
-    })
+    } as JwtSignOptions)
     await this.tokenRepo.update({ userId: user._id }, { refreshToken: newRefreshToken })
     return { accessToken, refreshToken: newRefreshToken }
   }
