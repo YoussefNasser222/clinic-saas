@@ -111,4 +111,18 @@ export class AdminService {
       { returnDocument: 'after', populate: { path: 'clinicId' } },
     );
   }
+  async deleteDoctor(id: string) {
+    const doctor = await this.doctorRepo.deleteOne({ _id: id });
+    if (doctor.deletedCount === 0) {
+      throw new NotFoundException('doctor not found');
+    }
+    return doctor;
+  }
+  async deletePatient(id: string) {
+    const patient = await this.patientRepo.deleteOne({ _id: id });
+    if (patient.deletedCount === 0) {
+      throw new NotFoundException('patient not found');
+    }
+    return patient;
+  }
 }

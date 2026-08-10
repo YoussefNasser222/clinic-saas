@@ -1,5 +1,5 @@
 import { Auth, User } from '@common/decorators';
-import { Body, Controller, Get, Param, Patch, Put, UsePipes } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Put, UsePipes } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { UpdateAdminDto } from './dto/update-admin.dto';
 import { AdminFactoryService } from './factory';
@@ -84,6 +84,22 @@ export class AdminController {
       message: 'doctor activated successfully',
       success: 'true',
       data: { doctor },
+    };
+  }
+  @Delete('doctors/:id')
+  async deleteDoctor(@Param('id') id : string){
+    await this.adminService.deleteDoctor(id);
+    return {
+      message: 'doctor deleted successfully',
+      success: 'true',
+    };
+  }
+   @Delete('patients/:id')
+  async deletePatient(@Param('id') id : string){
+    await this.adminService.deletePatient(id);
+    return {
+      message: 'patient deleted successfully',
+      success: 'true',
     };
   }
 }
