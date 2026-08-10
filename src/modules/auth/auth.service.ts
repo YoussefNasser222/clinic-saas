@@ -117,6 +117,8 @@ export class AuthService {
       throw new BadRequestException("otp expired")
     }
     const hashPassword = await bcrypt.hash(resetPasswordDto.newPassword, 10)
+    user.otp = ""
+    user.otpExpired = new Date()
     await this.userRepo.update({ email: resetPasswordDto.email }, { password: hashPassword })
   }
 }
