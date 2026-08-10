@@ -43,8 +43,6 @@ export class CreatePatientDto {
     phoneNumber: string;
     @IsEmail()
     email: string;
-    @IsMongoId()
-    doctorId: Types.ObjectId;
 }
 
 export class LoginDto {

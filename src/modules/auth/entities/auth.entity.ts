@@ -23,8 +23,7 @@ export class Patient {
     phoneNumber: string;
     email: string;
     password : string
-    doctorId: Types.ObjectId;
     otp: string;
     otpExpired: Date;
-    clinicId : Types.ObjectId 
+    
 }

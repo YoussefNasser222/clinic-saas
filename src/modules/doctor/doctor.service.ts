@@ -92,4 +92,12 @@ export class DoctorService {
       updatedPatient?.toObject() || {};
     return other;
   }
+  async deleteDoctor(user : any){
+    const deletedUser = await this.doctorRepo.deleteOne({ _id: user._id });
+    const deleteClinic = await this.clinicRepo.deleteOne({ doctorId: user._id });
+    if(deletedUser.deletedCount === 0){
+      throw new NotFoundException('Doctor not found');
+    }
+    return deletedUser;
+  }
 }

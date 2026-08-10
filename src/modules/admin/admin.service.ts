@@ -23,7 +23,6 @@ export class AdminService {
       paidExpired: { $gte: new Date() },
     });
     const expiredSubscriptions = await this.doctorRepo.count({
-      isPaid: false,
       paidExpired: { $lt: new Date() },
     });
     const totalPatients = await this.patientRepo.count();
@@ -99,11 +98,15 @@ export class AdminService {
     if (!doctor) {
       throw new NotFoundException('doctor not found');
     }
+    const startDate =
+      doctor.paidExpired && doctor.paidExpired > new Date()
+        ? doctor.paidExpired
+        : new Date();
     return await this.doctorRepo.update(
       { _id: id },
       {
         isPaid: true,
-        paidExpired: addMonths(new Date(), activeAccountDto.monthNumber),
+        paidExpired: addMonths(startDate, activeAccountDto.monthNumber),
       },
       { returnDocument: 'after', populate: { path: 'clinicId' } },
     );

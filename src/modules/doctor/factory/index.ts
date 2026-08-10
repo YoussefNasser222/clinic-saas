@@ -97,8 +97,6 @@ export class DoctorFactoryService {
     patient.phoneNumber = updatePatientDto.phoneNumber || oldPatient.phoneNumber;
     patient.otp = '';
     patient.otpExpired = new Date();
-    patient.doctorId = user._id;
-    patient.clinicId = user.clinicId;
     return patient;
   }
 }

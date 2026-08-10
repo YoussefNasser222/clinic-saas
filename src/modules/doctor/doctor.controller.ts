@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { DoctorService } from './doctor.service';
 import { Auth, User } from '@common/decorators';
 import { DoctorFactoryService } from './factory';
@@ -95,5 +95,12 @@ export class DoctorController {
    data: updatedPatient,
   };
  }
-
+ @Delete()
+ async deleteDoctor(@User() user : any){
+  await this.doctorService.deleteDoctor(user)
+  return {
+    message : "doctor Deleted successfully",
+    success : true
+  }
+ }
 }

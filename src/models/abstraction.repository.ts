@@ -5,6 +5,7 @@ import {
   QueryOptions,
   UpdateQuery,
   HydratedDocument,
+  DeleteResult,
 } from 'mongoose';
 
 export class AbstractRepository<T> {
@@ -20,7 +21,11 @@ export class AbstractRepository<T> {
     projection?: ProjectionType<T>,
     options?: QueryOptions<T>,
   ): Promise<HydratedDocument<T> | null> {
-    return this.model.findOne(filter, projection, options) as unknown as Promise<HydratedDocument<T> | null>;
+    return this.model.findOne(
+      filter,
+      projection,
+      options,
+    ) as unknown as Promise<HydratedDocument<T> | null>;
   }
 
   public async update(
@@ -28,7 +33,11 @@ export class AbstractRepository<T> {
     updateQuery: UpdateQuery<T>,
     options?: QueryOptions<T>,
   ): Promise<HydratedDocument<T> | null> {
-    return this.model.findOneAndUpdate(filter, updateQuery, options) as unknown as Promise<HydratedDocument<T> | null>;
+    return this.model.findOneAndUpdate(
+      filter,
+      updateQuery,
+      options,
+    ) as unknown as Promise<HydratedDocument<T> | null>;
   }
 
   public async getAll(
@@ -36,9 +45,22 @@ export class AbstractRepository<T> {
     projection?: ProjectionType<T>,
     options?: QueryOptions<T>,
   ): Promise<HydratedDocument<T>[]> {
-    return this.model.find(filter, projection, options) as unknown as Promise<HydratedDocument<T>[]>;
+    return this.model.find(
+      filter,
+      projection,
+      options,
+    ) as unknown as Promise<HydratedDocument<T>[]>;
   }
-  async count(filter: QueryFilter<T> = {}): Promise<number> {
+
+  public async count(filter: QueryFilter<T> = {}): Promise<number> {
     return this.model.countDocuments(filter);
+  }
+
+  public async deleteOne(filter: QueryFilter<T>): Promise<DeleteResult> {
+    return this.model.deleteOne(filter);
+  }
+
+  public async deleteMany(filter: QueryFilter<T>): Promise<DeleteResult> {
+    return this.model.deleteMany(filter);
   }
 }

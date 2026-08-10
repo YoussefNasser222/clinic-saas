@@ -21,8 +21,8 @@ export class AuthController {
   }
   @Post('register/patient')
   @Auth(["Doctor"])
-  async createPatient(@Body() createPatientDto: CreatePatientDto , @User() user : any) {
-    const patient = await this.authFactoryService.createPatient(createPatientDto , user)
+  async createPatient(@Body() createPatientDto: CreatePatientDto ) {
+    const patient = await this.authFactoryService.createPatient(createPatientDto)
     const createdPatient = await this.authService.createPatient(patient);
     return {
       message: "patient created successfully",
