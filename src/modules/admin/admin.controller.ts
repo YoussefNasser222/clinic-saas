@@ -1,0 +1,89 @@
+import { Auth, User } from '@common/decorators';
+import { Body, Controller, Get, Param, Patch, Put, UsePipes } from '@nestjs/common';
+import { AdminService } from './admin.service';
+import { UpdateAdminDto } from './dto/update-admin.dto';
+import { AdminFactoryService } from './factory';
+import { IsNumber } from 'class-validator';
+import { ActiveAccountDto as ActiveAccountDto } from './dto/create-admin.dto';
+
+@Controller('admin')
+@Auth(['Admin'])
+export class AdminController {
+  constructor(
+    private readonly adminService: AdminService,
+    private readonly adminFactoryService: AdminFactoryService,
+  ) {}
+  @Get('dash-board')
+  async getDashboard() {
+    const result = await this.adminService.dashBoard();
+    return {
+      message: 'data retrieved successfully',
+      success: true,
+      data: { result },
+    };
+  }
+  @Put()
+  async updateAdmin(@Body() updateAdminDto: UpdateAdminDto, @User() user: any) {
+    const admin = await this.adminFactoryService.update(user, updateAdminDto);
+    const updatedAdmin = await this.adminService.updateAdmin(user, admin);
+    return {
+      message: 'admin updated successfully',
+      success: 'true',
+      data: { updatedAdmin },
+    };
+  }
+  @Get('profile')
+  async getProfile(@User() user: any) {
+    const admin = await this.adminService.getAdmin(user);
+    return {
+      message: 'admin retrieved successfully',
+      success: 'true',
+      data: { admin },
+    };
+  }
+  @Get('doctors')
+  async getDoctors() {
+    const doctors = await this.adminService.getDoctors();
+    return {
+      message: 'doctors retrieved successfully',
+      success: 'true',
+      data: { doctors },
+    };
+  }
+  @Get('doctors/:id')
+  async getDoctor(@User() user: any , @Param('id') id: string) {
+    const doctor = await this.adminService.getDoctor(user, id);
+    return {
+      message: 'doctor retrieved successfully',
+      success: 'true',
+      data: { doctor },
+    };
+  }
+  @Get('clinics')
+  async getClinics() {
+    const clinics = await this.adminService.getClinics();
+    return {
+      message: 'clinics retrieved successfully',
+      success: 'true',
+      data: { clinics },
+    };
+  }
+  @Get('clinics/:id')
+  async getClinic(@User() user: any , @Param('id') id: string) {
+    const clinic = await this.adminService.getClinic(user, id);
+    return {
+      message: 'clinic retrieved successfully',
+      success: 'true',
+      data: { clinic },
+    };
+  }
+  @Patch('doctors/:id/active')
+  async activeDoctor(@Param('id') id: string , @Body()  activeAccountDto :ActiveAccountDto) {
+    const doctor = await this.adminService.activeDoctor(id, activeAccountDto);
+    return {
+      message: 'doctor activated successfully',
+      success: 'true',
+      data: { doctor },
+    };
+  }
+}

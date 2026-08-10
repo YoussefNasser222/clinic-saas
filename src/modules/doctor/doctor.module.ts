@@ -16,5 +16,6 @@ import { Clinic, ClinicRepository, clinicSchema } from '@models/index';
   ],
   controllers: [DoctorController],
   providers: [DoctorService, JwtService, DoctorFactoryService , ClinicRepository],
+  exports: [DoctorService, ClinicRepository],
 })
 export class DoctorModule { }

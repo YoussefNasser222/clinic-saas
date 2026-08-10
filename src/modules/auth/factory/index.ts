@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import * as bcrypt from 'bcrypt';
 import { CreateDoctorDto, CreatePatientDto } from "../dto/create-auth.dto";
 import { Doctor, Patient } from "../entities/auth.entity";
@@ -30,6 +30,9 @@ export class AuthFactoryService {
         patient.otp = '';
         patient.otpExpired = new Date();
         patient.doctorId = user._id;
+        if(!user.clinicId){
+            throw new BadRequestException('you must create your clinic first');
+        }
         patient.clinicId = user.clinicId;
         return patient
     }

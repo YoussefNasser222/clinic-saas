@@ -38,4 +38,7 @@ export class AbstractRepository<T> {
   ): Promise<HydratedDocument<T>[]> {
     return this.model.find(filter, projection, options) as unknown as Promise<HydratedDocument<T>[]>;
   }
+  async count(filter: QueryFilter<T> = {}): Promise<number> {
+    return this.model.countDocuments(filter);
+  }
 }
