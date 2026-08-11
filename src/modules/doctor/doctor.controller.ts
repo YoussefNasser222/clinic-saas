@@ -1,14 +1,26 @@
-import { Auth, User } from '@common/decorators';
+import { Auth, Paid, User } from '@common/decorators';
 import { IsPaid } from '@common/guards';
-import { UpdatedDoctorDto, UpdatedPatientDto } from '@modules/auth/dto/update-auth.dto';
-import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
+import {
+  UpdatedDoctorDto,
+  UpdatedPatientDto,
+} from '@modules/auth/dto/update-auth.dto';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
 import { DoctorService } from './doctor.service';
 import { CreateClinicDto } from './dto/create-clinic.dto';
 import { UpdatedClinicDto } from './dto/update-clinic.dto';
 import { DoctorFactoryService } from './factory';
 
 @Controller('doctor')
-@Auth(['Doctor'])
+@Paid(['Doctor'])
 export class DoctorController {
   constructor(
     private readonly doctorService: DoctorService,
@@ -37,7 +49,6 @@ export class DoctorController {
     };
   }
   @Post('register/clinic')
-  @UseGuards(IsPaid)
   async createClinic(
     @Body() createClinicDto: CreateClinicDto,
     @User() user: any,
@@ -72,40 +83,38 @@ export class DoctorController {
   }
   @Get('clinic')
   @UseGuards(IsPaid)
-  async getMyClinic(@User() user : any){
- const clinic = await this.doctorService.getMyClinic(user);
- return {
-  message: 'clinic retrieved successfully',
-  success: true,
-  data: clinic,
- };
+  async getMyClinic(@User() user: any) {
+    const clinic = await this.doctorService.getMyClinic(user);
+    return {
+      message: 'clinic retrieved successfully',
+      success: true,
+      data: clinic,
+    };
   }
- @Put('patient/:id')
- @UseGuards(IsPaid)
- async updatePatient(
-  @Body() updatePatientDto: UpdatedPatientDto,
-  @Param('id') id: string,
-  @User() user: any,
- ) {
-  const patient = await this.doctorFactoryService.UpdatePatient(
-   updatePatientDto,
-   user,
-   id,
-  );
-  const updatedPatient = await this.doctorService.updatePatient(patient, id);
-  return {
-   message: 'patient updated successfully',
-   success: true,
-   data: updatedPatient,
-  };
- }
- @Delete()
- @UseGuards(IsPaid)
- async deleteDoctor(@User() user : any){
-  await this.doctorService.deleteDoctor(user)
-  return {
-    message : "doctor Deleted successfully",
-    success : true
+  @Put('patient/:id')
+  async updatePatient(
+    @Body() updatePatientDto: UpdatedPatientDto,
+    @Param('id') id: string,
+    @User() user: any,
+  ) {
+    const patient = await this.doctorFactoryService.UpdatePatient(
+      updatePatientDto,
+      user,
+      id,
+    );
+    const updatedPatient = await this.doctorService.updatePatient(patient, id);
+    return {
+      message: 'patient updated successfully',
+      success: true,
+      data: updatedPatient,
+    };
   }
- }
+  @Delete()
+  async deleteDoctor(@User() user: any) {
+    await this.doctorService.deleteDoctor(user);
+    return {
+      message: 'doctor Deleted successfully',
+      success: true,
+    };
+  }
 }
