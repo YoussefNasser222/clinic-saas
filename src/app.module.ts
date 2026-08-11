@@ -7,6 +7,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './modules/auth/auth.module';
 import { DoctorModule } from './modules/doctor/doctor.module';
 import { AdminModule } from './modules/admin/admin.module';
+import { AppointmentModule } from './modules/appointment/appointment.module';
+import { PatientModule } from './modules/patient/patient.module';
 import devConfig from '@config/env/dev.config';
 
 @Module({
@@ -27,6 +29,8 @@ import devConfig from '@config/env/dev.config';
     AuthModule,
     DoctorModule,
     AdminModule,
+    AppointmentModule,
+    PatientModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -18,3 +18,6 @@ export * from './token/token.repository';
 
 export * from './clinic/clinic.schema';
 export * from './clinic/clinic.repository';
+
+export * from './appointment/appointment.schema';
+export * from './appointment/appointment.repository';

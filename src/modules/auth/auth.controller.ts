@@ -1,8 +1,9 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateDoctorDto, CreatePatientDto, LoginDto, ResetPasswordDto } from './dto/create-auth.dto';
 import { AuthFactoryService } from './factory';
 import { Auth, User } from '@common/decorators';
+import { IsPaid } from '@common/guards';
 
 @Controller('auth')
 export class AuthController {
@@ -21,6 +22,7 @@ export class AuthController {
   }
   @Post('register/patient')
   @Auth(["Doctor"])
+  @UseGuards(IsPaid)
   async createPatient(@Body() createPatientDto: CreatePatientDto ) {
     const patient = await this.authFactoryService.createPatient(createPatientDto)
     const createdPatient = await this.authService.createPatient(patient);
@@ -60,7 +62,7 @@ export class AuthController {
   async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
      await this.authService.resetPassword(resetPasswordDto);
     return {
-      message: "password reseted successfully",
+      message: "password reset successfully",
       success: true,
     }
   }

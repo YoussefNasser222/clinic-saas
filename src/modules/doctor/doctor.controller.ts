@@ -1,11 +1,11 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
-import { DoctorService } from './doctor.service';
 import { Auth, User } from '@common/decorators';
-import { DoctorFactoryService } from './factory';
+import { IsPaid } from '@common/guards';
 import { UpdatedDoctorDto, UpdatedPatientDto } from '@modules/auth/dto/update-auth.dto';
-import { log } from 'console';
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { DoctorService } from './doctor.service';
 import { CreateClinicDto } from './dto/create-clinic.dto';
 import { UpdatedClinicDto } from './dto/update-clinic.dto';
+import { DoctorFactoryService } from './factory';
 
 @Controller('doctor')
 @Auth(['Doctor'])
@@ -37,6 +37,7 @@ export class DoctorController {
     };
   }
   @Post('register/clinic')
+  @UseGuards(IsPaid)
   async createClinic(
     @Body() createClinicDto: CreateClinicDto,
     @User() user: any,
@@ -53,6 +54,7 @@ export class DoctorController {
     };
   }
   @Put('clinic')
+  @UseGuards(IsPaid)
   async updateClinic(
     @Body() updateClinicDto: UpdatedClinicDto,
     @User() user: any,
@@ -69,6 +71,7 @@ export class DoctorController {
     };
   }
   @Get('clinic')
+  @UseGuards(IsPaid)
   async getMyClinic(@User() user : any){
  const clinic = await this.doctorService.getMyClinic(user);
  return {
@@ -78,6 +81,7 @@ export class DoctorController {
  };
   }
  @Put('patient/:id')
+ @UseGuards(IsPaid)
  async updatePatient(
   @Body() updatePatientDto: UpdatedPatientDto,
   @Param('id') id: string,
@@ -96,6 +100,7 @@ export class DoctorController {
   };
  }
  @Delete()
+ @UseGuards(IsPaid)
  async deleteDoctor(@User() user : any){
   await this.doctorService.deleteDoctor(user)
   return {
