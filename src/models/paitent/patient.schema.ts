@@ -10,6 +10,8 @@ export class Patient extends User {
   lastName: string;
   @Prop({ type: String, required: true })
   phoneNumber: string;
+  @Prop({ type: SchemaTypes.ObjectId, ref: 'Doctor', required: true })
+  createdBy: Types.ObjectId;
 }
 
 export const patientSchema = SchemaFactory.createForClass(Patient);

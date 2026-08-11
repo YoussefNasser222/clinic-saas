@@ -1,4 +1,8 @@
-import { ClinicRepository, DoctorRepository, PatientRepository } from '@models/index';
+import {
+  ClinicRepository,
+  DoctorRepository,
+  PatientRepository,
+} from '@models/index';
 import {
   UpdatedDoctorDto,
   UpdatedPatientDto,
@@ -58,12 +62,9 @@ export class DoctorFactoryService {
     clinic.workingDays = createClinicDto.workingDays;
     return clinic;
   }
-  async updateClinic(
-    updateClinicDto: UpdatedClinicDto,
-    doctor : any,
-  ) {
+  async updateClinic(updateClinicDto: UpdatedClinicDto, doctor: any) {
     const clinic = new Clinic();
-    const oldClinic = await this.clinicRepo.getOne({ doctorId : doctor._id });
+    const oldClinic = await this.clinicRepo.getOne({ doctorId: doctor._id });
     if (!oldClinic) {
       throw new NotFoundException('Clinic not found');
     }
@@ -83,20 +84,32 @@ export class DoctorFactoryService {
 
     return clinic;
   }
-  async UpdatePatient(updatePatientDto: UpdatedPatientDto, user: any , id : string) {
-    const oldPatient = await this.patientRepo.getOne({_id : id ,clinicId : user.clinicId})
-    if(!oldPatient){
-      throw new NotFoundException("patient Not found")
+  async UpdatePatient(
+    updatePatientDto: UpdatedPatientDto,
+    user: any,
+    id: string,
+  ) {
+    const oldPatient = await this.patientRepo.getOne({
+      _id: id,
+      clinicId: user.clinicId,
+    });
+    if (!oldPatient) {
+      throw new NotFoundException('patient Not found');
     }
     const patient = new Patient();
     patient.userName = updatePatientDto.userName || oldPatient.userName;
-    patient.password = await bcrypt.hash(updatePatientDto.password || oldPatient.password, 10);
+    patient.password = await bcrypt.hash(
+      updatePatientDto.password || oldPatient.password,
+      10,
+    );
     patient.email = updatePatientDto.email || oldPatient.email;
     patient.firstName = updatePatientDto.firstName || oldPatient.firstName;
     patient.lastName = updatePatientDto.lastName || oldPatient.lastName;
-    patient.phoneNumber = updatePatientDto.phoneNumber || oldPatient.phoneNumber;
+    patient.phoneNumber =
+      updatePatientDto.phoneNumber || oldPatient.phoneNumber;
     patient.otp = '';
     patient.otpExpired = new Date();
+    patient.createdBy = oldPatient.createdBy;
     return patient;
   }
 }

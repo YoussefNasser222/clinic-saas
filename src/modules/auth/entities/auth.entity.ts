@@ -25,5 +25,6 @@ export class Patient {
     password : string
     otp: string;
     otpExpired: Date;
+    createdBy: Types.ObjectId;
     
 }

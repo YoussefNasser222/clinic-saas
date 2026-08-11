@@ -19,7 +19,7 @@ export class AuthFactoryService {
         doctor.otpExpired = new Date();
         return doctor
     }
-    async createPatient(createPatientDto: CreatePatientDto) {
+    async createPatient(createPatientDto: CreatePatientDto , user : any) {
         const patient = new Patient()
         patient.userName = createPatientDto.userName
         patient.password = await bcrypt.hash(createPatientDto.password, 10)
@@ -29,6 +29,7 @@ export class AuthFactoryService {
         patient.phoneNumber = createPatientDto.phoneNumber
         patient.otp = '';
         patient.otpExpired = new Date();
+        patient.createdBy = user._id
         return patient
     }
 }

@@ -1,12 +1,11 @@
 import { PUBLIC, ROLE } from '@common/decorators';
 import {
-  Injectable,
   CanActivate,
   ExecutionContext,
+  Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { log } from 'console';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
