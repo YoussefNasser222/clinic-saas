@@ -2,11 +2,12 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import devConfig from "./config/env/dev.config";
+
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './modules/auth/auth.module';
 import { DoctorModule } from './modules/doctor/doctor.module';
 import { AdminModule } from './modules/admin/admin.module';
+import devConfig from '@config/env/dev.config';
 
 @Module({
   imports: [
