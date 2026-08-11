@@ -2,7 +2,7 @@ import { Types } from "mongoose";
 
 export class Doctor {
     readonly _id: Types.ObjectId
-    userName: string;
+    nationalId : string
     firstName: string;
     lastName: string;
     password: string;
@@ -17,7 +17,7 @@ export class Doctor {
 
 export class Patient {
     readonly _id: Types.ObjectId
-    userName: string;
+    nationalId : string
     firstName: string;
     lastName: string;
     phoneNumber: string;

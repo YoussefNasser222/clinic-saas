@@ -40,7 +40,7 @@ export class DoctorFactoryService {
     updatedDoctor.phoneNumber =
       updateDoctorDto.phoneNumber || doctor.phoneNumber;
     updatedDoctor.lastName = updateDoctorDto.lastName || doctor.lastName;
-    updatedDoctor.userName = updateDoctorDto.userName || doctor.userName;
+    updatedDoctor.nationalId = updateDoctorDto.nationalId || doctor.nationalId;
     updatedDoctor.isPaid = doctor.isPaid;
     updatedDoctor.paidExpired = doctor.paidExpired;
     updatedDoctor.otp = doctor.otp;
@@ -83,33 +83,5 @@ export class DoctorFactoryService {
     clinic.workingDays = updateClinicDto.workingDays || oldClinic.workingDays;
 
     return clinic;
-  }
-  async UpdatePatient(
-    updatePatientDto: UpdatedPatientDto,
-    user: any,
-    id: string,
-  ) {
-    const oldPatient = await this.patientRepo.getOne({
-      _id: id,
-      clinicId: user.clinicId,
-    });
-    if (!oldPatient) {
-      throw new NotFoundException('patient Not found');
-    }
-    const patient = new Patient();
-    patient.userName = updatePatientDto.userName || oldPatient.userName;
-    patient.password = await bcrypt.hash(
-      updatePatientDto.password || oldPatient.password,
-      10,
-    );
-    patient.email = updatePatientDto.email || oldPatient.email;
-    patient.firstName = updatePatientDto.firstName || oldPatient.firstName;
-    patient.lastName = updatePatientDto.lastName || oldPatient.lastName;
-    patient.phoneNumber =
-      updatePatientDto.phoneNumber || oldPatient.phoneNumber;
-    patient.otp = '';
-    patient.otpExpired = new Date();
-    patient.createdBy = oldPatient.createdBy;
-    return patient;
   }
 }

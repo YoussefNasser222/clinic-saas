@@ -113,6 +113,7 @@ export class AdminService {
   }
   async deleteDoctor(id: string) {
     const doctor = await this.doctorRepo.deleteOne({ _id: id });
+    await this.clinicRepo.deleteOne({ doctorId: id });
     if (doctor.deletedCount === 0) {
       throw new NotFoundException('doctor not found');
     }

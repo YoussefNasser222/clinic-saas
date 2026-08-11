@@ -7,7 +7,7 @@ import { Doctor, Patient } from "../entities/auth.entity";
 export class AuthFactoryService {
     async createDoctor(createDoctorDto: CreateDoctorDto) {
         const doctor = new Doctor()
-        doctor.userName = createDoctorDto.userName
+        doctor.nationalId = createDoctorDto.nationalId
         doctor.password = await bcrypt.hash(createDoctorDto.password, 10)
         doctor.email = createDoctorDto.email
         doctor.firstName = createDoctorDto.firstName
@@ -21,7 +21,7 @@ export class AuthFactoryService {
     }
     async createPatient(createPatientDto: CreatePatientDto , user : any) {
         const patient = new Patient()
-        patient.userName = createPatientDto.userName
+        patient.nationalId = createPatientDto.nationalId
         patient.password = await bcrypt.hash(createPatientDto.password, 10)
         patient.email = createPatientDto.email
         patient.firstName = createPatientDto.firstName

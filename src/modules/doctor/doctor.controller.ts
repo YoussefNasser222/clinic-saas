@@ -1,18 +1,14 @@
-import { Auth, Paid, User } from '@common/decorators';
-import { IsPaid } from '@common/guards';
+import { Paid, User } from '@common/decorators';
 import {
-  UpdatedDoctorDto,
-  UpdatedPatientDto,
+  UpdatedDoctorDto
 } from '@modules/auth/dto/update-auth.dto';
 import {
   Body,
   Controller,
   Delete,
   Get,
-  Param,
   Post,
-  Put,
-  UseGuards,
+  Put
 } from '@nestjs/common';
 import { DoctorService } from './doctor.service';
 import { CreateClinicDto } from './dto/create-clinic.dto';
@@ -91,25 +87,6 @@ export class DoctorController {
       message: 'clinic retrieved successfully',
       success: true,
       data: clinic,
-    };
-  }
-  @Put('patient/:id')
-  @Paid(['Doctor'])
-  async updatePatient(
-    @Body() updatePatientDto: UpdatedPatientDto,
-    @Param('id') id: string,
-    @User() user: any,
-  ) {
-    const patient = await this.doctorFactoryService.UpdatePatient(
-      updatePatientDto,
-      user,
-      id,
-    );
-    const updatedPatient = await this.doctorService.updatePatient(patient, id);
-    return {
-      message: 'patient updated successfully',
-      success: true,
-      data: updatedPatient,
     };
   }
   @Delete()
