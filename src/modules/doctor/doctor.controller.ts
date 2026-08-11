@@ -20,13 +20,13 @@ import { UpdatedClinicDto } from './dto/update-clinic.dto';
 import { DoctorFactoryService } from './factory';
 
 @Controller('doctor')
-@Paid(['Doctor'])
 export class DoctorController {
   constructor(
     private readonly doctorService: DoctorService,
     private readonly doctorFactoryService: DoctorFactoryService,
   ) {}
   @Get()
+  @Paid(['Doctor'])
   async findOne(@User() user: any) {
     const doctor = await this.doctorService.findOne(user.id);
     return {
@@ -36,6 +36,7 @@ export class DoctorController {
     };
   }
   @Put()
+  @Paid(['Doctor'])
   async update(@Body() updateDoctorDto: UpdatedDoctorDto, @User() user: any) {
     const doctor = await this.doctorFactoryService.updateDoctor(
       updateDoctorDto,
@@ -49,6 +50,7 @@ export class DoctorController {
     };
   }
   @Post('register/clinic')
+  @Paid(['Doctor'])
   async createClinic(
     @Body() createClinicDto: CreateClinicDto,
     @User() user: any,
@@ -65,7 +67,7 @@ export class DoctorController {
     };
   }
   @Put('clinic')
-  @UseGuards(IsPaid)
+  @Paid(['Doctor'])
   async updateClinic(
     @Body() updateClinicDto: UpdatedClinicDto,
     @User() user: any,
@@ -82,7 +84,7 @@ export class DoctorController {
     };
   }
   @Get('clinic')
-  @UseGuards(IsPaid)
+  @Paid(['Doctor'])
   async getMyClinic(@User() user: any) {
     const clinic = await this.doctorService.getMyClinic(user);
     return {
@@ -92,6 +94,7 @@ export class DoctorController {
     };
   }
   @Put('patient/:id')
+  @Paid(['Doctor'])
   async updatePatient(
     @Body() updatePatientDto: UpdatedPatientDto,
     @Param('id') id: string,
@@ -110,6 +113,7 @@ export class DoctorController {
     };
   }
   @Delete()
+  @Paid(['Doctor'])
   async deleteDoctor(@User() user: any) {
     await this.doctorService.deleteDoctor(user);
     return {

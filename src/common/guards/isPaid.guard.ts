@@ -10,7 +10,6 @@ export class IsPaid implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest();
     const user = request.user;
-
     if (!user) {
       throw new ForbiddenException('Unauthorized , doctors only');
     }
