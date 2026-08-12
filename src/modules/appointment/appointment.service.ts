@@ -1,4 +1,8 @@
-import { AppointmentRepository, DoctorRepository } from '@models/index';
+import {
+  AppointmentRepository,
+  AppointmentStatus,
+  DoctorRepository,
+} from '@models/index';
 import {
   ConflictException,
   ForbiddenException,
@@ -17,24 +21,18 @@ export class AppointmentService {
   ) {}
 
   async createAppointment(appointment: Appointment) {
-    const doctor = await this.doctorRepo.getOne({ _id: appointment.doctorId });
-    if (!doctor) {
-      throw new NotFoundException('doctor not found');
-    }
-    if (doctor.clinicId.toString() !== appointment.clinicId.toString()) {
-      throw new UnauthorizedException();
-    }
     const appointmentExist = await this.appointmentRepo.getOne({
       doctorId: appointment.doctorId,
       startTime: { $lt: appointment.endTime },
       endTime: { $gt: appointment.startTime },
+      status: { $ne: AppointmentStatus.CANCELLED },
     });
-
     if (appointmentExist) {
       throw new ConflictException('Appointment already exists');
     }
     return await this.appointmentRepo.create(appointment);
   }
+  
   async deleteAppointment(user: any, id: string) {
     const appointment = await this.appointmentRepo.deleteOne({
       _id: id,

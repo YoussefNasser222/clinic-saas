@@ -10,10 +10,9 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AppointmentService } from './appointment.service';
-import { CreateAppointmentDto } from './dto/create-appointment.dto';
+import { CreateAppointmentDoctorDto, CreateAppointmentPatientDto } from './dto/create-appointment.dto';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto';
 import { AppointmentFactoryService } from './factory';
-import { IsPaid } from '@common/guards';
 
 @Controller('appointment')
 export class AppointmentController {
@@ -21,16 +20,38 @@ export class AppointmentController {
     private readonly appointmentService: AppointmentService,
     private readonly appointmentFactoryService: AppointmentFactoryService,
   ) {}
-  @Post()
+  @Post('patient')
   @Auth(['Patient'])
-  async createAppointment(
-    @Body() createAppointmentDto: CreateAppointmentDto,
+  async createAppointmentByPatient(
+    @Body() createAppointmentDto: CreateAppointmentPatientDto,
     @User() user: any,
   ) {
-    const appointment = this.appointmentFactoryService.create(
-      createAppointmentDto,
-      user,
-    );
+    const appointment =
+      await this.appointmentFactoryService.createAppointmentByPatient(
+        createAppointmentDto,
+        user,
+      );
+    const createdAppointment =
+      await this.appointmentService.createAppointment(appointment);
+    return {
+      message: 'Appointment created successfully',
+      success: true,
+      data: { createdAppointment },
+    };
+  }
+  @Post('doctor/:id')
+  @Paid(['Doctor'])
+  async createAppointmentByDoctor(
+    @Body() createAppointmentDto: CreateAppointmentDoctorDto,
+    @User() user: any,
+    @Param('id') id : string
+  ) {
+    const appointment =
+      await this.appointmentFactoryService.createAppointmentByDoctor(
+        createAppointmentDto,
+        user,
+        id
+      );
     const createdAppointment =
       await this.appointmentService.createAppointment(appointment);
     return {

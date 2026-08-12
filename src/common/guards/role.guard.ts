@@ -22,7 +22,9 @@ export class RolesGuard implements CanActivate {
       context.getClass(),
     ]);
     if (!roles.includes(user.role)) {
-      throw new UnauthorizedException('Unauthorized');
+      throw new UnauthorizedException(
+        `Unauthorized , must be a ${roles}`,
+      );
     }
     return true;
   }

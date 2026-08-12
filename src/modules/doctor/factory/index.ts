@@ -40,7 +40,7 @@ export class DoctorFactoryService {
     updatedDoctor.phoneNumber =
       updateDoctorDto.phoneNumber || doctor.phoneNumber;
     updatedDoctor.lastName = updateDoctorDto.lastName || doctor.lastName;
-    updatedDoctor.nationalId = updateDoctorDto.nationalId || doctor.nationalId;
+    updatedDoctor.nationalId = doctor.nationalId;
     updatedDoctor.isPaid = doctor.isPaid;
     updatedDoctor.paidExpired = doctor.paidExpired;
     updatedDoctor.otp = doctor.otp;
