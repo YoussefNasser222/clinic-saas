@@ -5,6 +5,13 @@
     "author": "",
     "private": true,
     "license": "UNLICENSED",
+     "pnpm": {
+    "onlyBuiltDependencies": [
+      "bcrypt",
+      "esbuild",
+      "unrs-resolver"
+    ]
+  },
     "scripts": {
       "build": "nest build && tsc-alias",
       "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
