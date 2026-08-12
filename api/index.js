@@ -1,20 +1,21 @@
 // api/index.js
-require('module-alias/register')
 const { NestFactory } = require('@nestjs/core');
 const { ExpressAdapter } = require('@nestjs/platform-express');
 const express = require('express');
 const { AppModule } = require('../dist/app.module');
 
 const server = express();
-let cachedApp;
+let cachedAppPromise;
 
-async function bootstrap() {
-  if (!cachedApp) {
-    const app = await NestFactory.create(AppModule, new ExpressAdapter(server));
-    await app.init();
-    cachedApp = server;
+function bootstrap() {
+  if (!cachedAppPromise) {
+    cachedAppPromise = (async () => {
+      const app = await NestFactory.create(AppModule, new ExpressAdapter(server));
+      await app.init();
+      return server;
+    })();
   }
-  return cachedApp;
+  return cachedAppPromise;
 }
 
 module.exports = async (req, res) => {
