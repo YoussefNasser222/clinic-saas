@@ -1,4 +1,5 @@
 // api/index.js
+require('module-alias/register')
 const { NestFactory } = require('@nestjs/core');
 const { ExpressAdapter } = require('@nestjs/platform-express');
 const express = require('express');
