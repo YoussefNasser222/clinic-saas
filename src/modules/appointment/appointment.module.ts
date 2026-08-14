@@ -16,5 +16,6 @@ import { DoctorModule } from '@modules/doctor/doctor.module';
   ],
   controllers: [AppointmentController],
   providers: [AppointmentService , JwtService , AppointmentFactoryService , AppointmentRepository],
+  exports : [AppointmentService , JwtService , AppointmentFactoryService , AppointmentRepository]
 })
 export class AppointmentModule {}

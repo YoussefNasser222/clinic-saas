@@ -58,7 +58,11 @@ export class AdminService {
     return rest;
   }
   async getDoctors() {
-    const doctors = await this.doctorRepo.getAll();
+    const doctors = await this.doctorRepo.getAll(
+      {},
+      {},
+      { select: '-password' },
+    );
     if (!doctors || doctors.length === 0) {
       throw new NotFoundException('doctors not found');
     }
@@ -68,7 +72,7 @@ export class AdminService {
     const doctor = await this.doctorRepo.getOne(
       { _id: id },
       {},
-      { populate: { path: 'clinicId' } },
+      { populate: { path: 'clinicId' }, select: '-password' },
     );
     if (!doctor) {
       throw new NotFoundException('doctor not found');
@@ -86,7 +90,7 @@ export class AdminService {
     const clinic = await this.clinicRepo.getOne(
       { _id: id },
       {},
-      { populate: { path: 'doctorId' } },
+      { populate: { path: 'doctorId', select: '-password' } },
     );
     if (!clinic) {
       throw new NotFoundException('clinic not found');
@@ -108,7 +112,11 @@ export class AdminService {
         isPaid: true,
         paidExpired: addMonths(startDate, activeAccountDto.monthNumber),
       },
-      { returnDocument: 'after', populate: { path: 'clinicId' } },
+      {
+        returnDocument: 'after',
+        populate: { path: 'clinicId' },
+        select: '-password',
+      },
     );
   }
   async deleteDoctor(id: string) {
