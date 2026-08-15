@@ -5,6 +5,20 @@
   "author": "",
   "private": true,
   "license": "UNLICENSED",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "bcrypt",
+      "esbuild",
+      "unrs-resolver"
+    ]
+  },
+  "_moduleAliases": {
+    "@models": "dist/models",
+    "@modules": "dist/modules",
+    "@shared": "dist/shared",
+    "@config": "dist/config",
+    "@common": "dist/common"
+  },
   "scripts": {
     "build": "nest build && tsc-alias",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
