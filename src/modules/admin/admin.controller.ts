@@ -121,23 +121,4 @@ export class AdminController {
       success: 'true',
     };
   }
-  @Post('upload')
-  @UseInterceptors(FileInterceptor('file'))
-  async uploadFile(@UploadedFile() file: Express.Multer.File) {
-    console.log(file);
-    const result = await this.uploadService.uploadFileToCloud(file, 'admin');
-    return {
-      message: 'file uploaded successfully',
-      success: true,
-      data: { result },
-    };
-  }
-  @Delete('upload')
-  async deleteFile() {
-    await this.uploadService.deleteFileFromCloud('admin');
-    return {
-      message: 'file deleted successfully',
-      success: true,
-    };
-  }
 }
