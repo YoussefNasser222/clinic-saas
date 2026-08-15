@@ -9,6 +9,7 @@ import { DoctorModule } from './modules/doctor/doctor.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { AppointmentModule } from './modules/appointment/appointment.module';
 import { PatientModule } from './modules/patient/patient.module';
+import { UploadModule } from './common/upload/upload.module';
 import devConfig from '@config/env/dev.config';
 
 @Module({
@@ -31,6 +32,7 @@ import devConfig from '@config/env/dev.config';
     AdminModule,
     AppointmentModule,
     PatientModule,
+    UploadModule,
   ],
   controllers: [AppController],
   providers: [AppService],

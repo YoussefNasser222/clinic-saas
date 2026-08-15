@@ -1,10 +1,25 @@
 import { Auth, User } from '@common/decorators';
-import { Body, Controller, Delete, Get, Param, Patch, Put, UsePipes } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Put,
+  UploadedFile,
+  UseInterceptors,
+  UsePipes,
+} from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { UpdateAdminDto } from './dto/update-admin.dto';
 import { AdminFactoryService } from './factory';
 import { IsNumber } from 'class-validator';
 import { ActiveAccountDto as ActiveAccountDto } from './dto/create-admin.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { UploadService } from '@common/upload';
 
 @Controller('admin')
 @Auth(['Admin'])
@@ -12,6 +27,7 @@ export class AdminController {
   constructor(
     private readonly adminService: AdminService,
     private readonly adminFactoryService: AdminFactoryService,
+    private readonly uploadService: UploadService,
   ) {}
   @Get('dash-board')
   async getDashboard() {
@@ -51,7 +67,7 @@ export class AdminController {
     };
   }
   @Get('doctors/:id')
-  async getDoctor(@User() user: any , @Param('id') id: string) {
+  async getDoctor(@User() user: any, @Param('id') id: string) {
     const doctor = await this.adminService.getDoctor(user, id);
     return {
       message: 'doctor retrieved successfully',
@@ -69,7 +85,7 @@ export class AdminController {
     };
   }
   @Get('clinics/:id')
-  async getClinic(@User() user: any , @Param('id') id: string) {
+  async getClinic(@User() user: any, @Param('id') id: string) {
     const clinic = await this.adminService.getClinic(user, id);
     return {
       message: 'clinic retrieved successfully',
@@ -78,7 +94,10 @@ export class AdminController {
     };
   }
   @Patch('doctors/:id/active')
-  async activeDoctor(@Param('id') id: string , @Body()  activeAccountDto :ActiveAccountDto) {
+  async activeDoctor(
+    @Param('id') id: string,
+    @Body() activeAccountDto: ActiveAccountDto,
+  ) {
     const doctor = await this.adminService.activeDoctor(id, activeAccountDto);
     return {
       message: 'doctor activated successfully',
@@ -87,19 +106,38 @@ export class AdminController {
     };
   }
   @Delete('doctors/:id')
-  async deleteDoctor(@Param('id') id : string){
+  async deleteDoctor(@Param('id') id: string) {
     await this.adminService.deleteDoctor(id);
     return {
       message: 'doctor deleted successfully',
       success: 'true',
     };
   }
-   @Delete('patients/:id')
-  async deletePatient(@Param('id') id : string){
+  @Delete('patients/:id')
+  async deletePatient(@Param('id') id: string) {
     await this.adminService.deletePatient(id);
     return {
       message: 'patient deleted successfully',
       success: 'true',
+    };
+  }
+  @Post('upload')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadFile(@UploadedFile() file: Express.Multer.File) {
+    console.log(file);
+    const result = await this.uploadService.uploadFileToCloud(file, 'admin');
+    return {
+      message: 'file uploaded successfully',
+      success: true,
+      data: { result },
+    };
+  }
+  @Delete('upload')
+  async deleteFile() {
+    await this.uploadService.deleteFileFromCloud('admin');
+    return {
+      message: 'file deleted successfully',
+      success: true,
     };
   }
 }

@@ -5,11 +5,13 @@ import { UserMongoModule } from '@shared/user-mongo.module';
 import { JwtService } from '@nestjs/jwt';
 import { DoctorModule } from '../doctor/doctor.module';
 import { AdminFactoryService } from './factory';
+import { UploadModule } from '@common/upload';
 
 @Module({
   imports: [
     UserMongoModule,
     DoctorModule,
+    UploadModule,
   ],
   controllers: [AdminController],
   providers: [AdminService , JwtService , AdminFactoryService],
