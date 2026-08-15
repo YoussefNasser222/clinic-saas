@@ -12,15 +12,8 @@
       "unrs-resolver"
     ]
   },
-  "_moduleAliases": {
-    "@models": "dist/models",
-    "@modules": "dist/modules",
-    "@shared": "dist/shared",
-    "@config": "dist/config",
-    "@common": "dist/common"
-  },
   "scripts": {
-    "build": "nest build && tsc-alias",
+    "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
