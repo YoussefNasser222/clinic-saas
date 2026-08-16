@@ -1,4 +1,3 @@
-// common/filters/global-exception.filter.ts
 import {
   ExceptionFilter,
   Catch,
@@ -16,7 +15,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 
     let status = HttpStatus.INTERNAL_SERVER_ERROR;
     let message = 'Something went wrong, please try again later';
-    
+
     if (exception instanceof HttpException) {
       status = exception.getStatus();
       const exceptionResponse = exception.getResponse();
