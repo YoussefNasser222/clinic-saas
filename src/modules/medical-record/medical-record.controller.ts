@@ -1,30 +1,38 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, NotFoundException } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseInterceptors,
+  UploadedFile,
+  NotFoundException,
+} from '@nestjs/common';
 import { MedicalRecordService } from './medical-record.service';
 import { CreateMedicalRecordDto } from './dto/create-medical-record.dto';
 import { UpdateMedicalRecordDto } from './dto/update-medical-record.dto';
-import { Paid } from '@common/decorators';
+import { Auth, Paid, User } from '@common/decorators';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadService } from '@common/upload';
 import { PrescriptionExtractorService } from './prescription-extractor.service';
+import { log } from 'console';
+import { MedicalRecordFactoryService } from './factory';
 
 @Controller('medical-record')
 export class MedicalRecordController {
-  constructor(private readonly medicalRecordService: MedicalRecordService,
-    private readonly uploadService: UploadService,
-    private readonly prescriptionExtractorService : PrescriptionExtractorService
+  constructor(
+    private readonly medicalRecordService: MedicalRecordService,
+    private readonly medicalRecordFactoryService: MedicalRecordFactoryService,
   ) {}
- @Post('extract')
- @Paid(['Doctor'])
- @UseInterceptors(FileInterceptor('image'))
- async extractPrescription(@UploadedFile() file: Express.Multer.File) {
-    if(!file) {
-      throw new NotFoundException('File is required');
-    }
-    const uploaded = await this.uploadService.uploadFileToCloud(file,'prescriptions') 
-     const extracted = await this.prescriptionExtractorService.extractFromImage(
-      file.buffer,
-      file.mimetype,
-    );
+  @Post('extract')
+  @Paid(['Doctor'])
+  @UseInterceptors(FileInterceptor('image'))
+  async extractPrescription(@UploadedFile() file: Express.Multer.File) {
+    const { uploaded, extracted } =
+      await this.medicalRecordService.extractPrescription(file);
+    log(uploaded);
     return {
       message: 'extracted successfully, please review before saving',
       success: true,
@@ -33,5 +41,52 @@ export class MedicalRecordController {
         extracted,
       },
     };
- }
+  }
+  @Post()
+  @Paid(['Doctor'])
+  async create(@Body() dto: CreateMedicalRecordDto, @User() user: any) {
+    const medicalRecord =
+      await this.medicalRecordFactoryService.createMedicalRecord(dto, user);
+    const createdMedicalRecord =
+      await this.medicalRecordService.create(medicalRecord);
+    return {
+      message: 'medical record created successfully',
+      success: true,
+      data: createdMedicalRecord,
+    };
+  }
+  @Get(':id')
+  @Paid(['Doctor'])
+  async getById(@Param('id') id: string, @User() user: any) {
+    const medicalRecord = await this.medicalRecordService.getById(id, user);
+    return {
+      message: 'data retrieved successfully',
+      success: true,
+      data: { medicalRecord },
+    };
+  }
+  @Get('patient/:id')
+  @Paid(['Doctor'])
+  async getMedicalRecord(@User() user: any, @Param('id') id: string) {
+    const medicalRecords = await this.medicalRecordService.getMedicalRecord(
+      user,
+      id,
+    );
+    return {
+      message: 'data retrieved successfully',
+      success: true,
+      data: { medicalRecords },
+    };
+  }
+  @Get()
+  @Auth(['Patient'])
+  async getMyMedicalRecord(@User() user: any) {
+    const medicalRecords =
+      await this.medicalRecordService.getMyMedicalRecord(user);
+    return {
+      message: 'data retrieved successfully',
+      success: true,
+      data: { medicalRecords },
+    };
+  }
 }

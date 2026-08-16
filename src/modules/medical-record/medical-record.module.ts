@@ -5,13 +5,27 @@ import { UserMongoModule } from '@shared/user-mongo.module';
 import { JwtService } from '@nestjs/jwt';
 import { UploadModule } from '@common/upload';
 import { PrescriptionExtractorService } from './prescription-extractor.service';
+import { AppointmentModule } from '@modules/appointment/appointment.module';
+import { MedicalRecordFactoryService } from './factory';
+import { MongooseModule } from '@nestjs/mongoose';
+import { MedicalRecord, MedicalRecordRepository, medicalRecordSchema } from '@models/index';
 
 @Module({
-  imports : [
+  imports: [
     UserMongoModule,
-    UploadModule
+    UploadModule,
+    AppointmentModule,
+    MongooseModule.forFeature([
+      { name: MedicalRecord.name, schema: medicalRecordSchema },
+    ]),
   ],
   controllers: [MedicalRecordController],
-  providers: [MedicalRecordService , JwtService,PrescriptionExtractorService],
+  providers: [
+    MedicalRecordService,
+    JwtService,
+    PrescriptionExtractorService,
+    MedicalRecordFactoryService,
+    MedicalRecordRepository
+  ],
 })
 export class MedicalRecordModule {}

@@ -53,7 +53,7 @@ async getPatientById(user: any, id: string) {
     patientId: id,
   });
   if (!appointmentExist) {
-    throw new ForbiddenException();
+    throw new ForbiddenException('You are not authorized to access this patient');
   }
   const patient = await this.patientRepo.getOne(
     { _id: id },
