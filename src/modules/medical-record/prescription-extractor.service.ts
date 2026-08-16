@@ -43,17 +43,21 @@ If any field is unclear or unreadable, use null. Never guess a dosage you cannot
         const cleaned = text.replace(/```json|```/g, '').trim();
         return JSON.parse(cleaned);
       } catch (error: any) {
-        lastError = error;
-        const isOverloaded = error?.status === 503;
-        if (isOverloaded && attempt < maxRetries - 1) {
-          const delay = 1000 * Math.pow(2, attempt); // 1s, 2s, 4s
-          await this.sleep(delay);
-          continue;
-        }
-        break;
-      }
+  lastError = error;
+  console.error('Gemini error details:', {
+    status: error?.status,
+    message: error?.message,
+    finishReason: error?.response?.candidates?.[0]?.finishReason,
+  });
+  const isOverloaded = error?.status === 503;
+  if (isOverloaded && attempt < maxRetries - 1) {
+    const delay = 1000 * Math.pow(2, attempt);
+    await this.sleep(delay);
+    continue;
+  }
+  break;
+}
     }
-
     throw new BadRequestException(
       'AI service is temporarily unavailable, please try again in a moment',
     );
