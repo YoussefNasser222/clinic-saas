@@ -21,3 +21,6 @@ export * from './clinic/clinic.repository';
 
 export * from './appointment/appointment.schema';
 export * from './appointment/appointment.repository';
+
+export * from './medicalRecord/medicalRecord.schema';
+export * from './medicalRecord/medicalRecord.repository';
