@@ -24,3 +24,6 @@ export * from './appointment/appointment.repository';
 
 export * from './medicalRecord/medicalRecord.schema';
 export * from './medicalRecord/medicalRecord.repository';
+
+export * from './notification/notification.schema';
+export * from './notification/notification.repository';

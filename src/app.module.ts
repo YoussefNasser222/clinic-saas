@@ -11,6 +11,7 @@ import { AppointmentModule } from './modules/appointment/appointment.module';
 import { PatientModule } from './modules/patient/patient.module';
 import { UploadModule } from './common/upload/upload.module';
 import { MedicalRecordModule } from './modules/medical-record/medical-record.module';
+import { NotificationModule } from './modules/notification/notification.module';
 import devConfig from '@config/env/dev.config';
 
 @Module({
@@ -35,6 +36,7 @@ import devConfig from '@config/env/dev.config';
     PatientModule,
     UploadModule,
     MedicalRecordModule,
+    NotificationModule,
   ],
   controllers: [AppController],
   providers: [AppService],

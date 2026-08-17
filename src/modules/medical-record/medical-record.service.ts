@@ -9,6 +9,7 @@ import { PrescriptionExtractorService } from './prescription-extractor.service';
 import { MedicalRecord } from './entities/medical-record.entity';
 import {
   AppointmentRepository,
+  AppointmentStatus,
   MedicalRecordRepository,
   RecordVisibility,
 } from '@models/index';
@@ -43,6 +44,10 @@ export class MedicalRecordService {
     };
   }
   async create(medicalRecord: MedicalRecord) {
+    await this.appointmentRepo.update(
+      { _id: medicalRecord.appointmentId },
+      { status: AppointmentStatus.CONFIRMED },
+    );
     return await this.medicalRecordRepo.create(medicalRecord);
   }
   async getMedicalRecord(user: any, id: string) {
@@ -98,7 +103,7 @@ export class MedicalRecordService {
       },
     );
     if (!medicalRecords || medicalRecords.length == 0) {
-      return []
+      return [];
     }
     return medicalRecords;
   }
