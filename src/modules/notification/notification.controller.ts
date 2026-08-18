@@ -113,11 +113,7 @@ export class NotificationController {
   @Delete('patient')
   @Auth(['Patient'])
   async deleteAllPatientNotifications(@User() user: any) {
-    const deletedNotification =
-      await this.notificationService.deleteAllPatientNotifications(user);
-    if (deletedNotification.deletedCount == 0) {
-      throw new NotFoundException('notification is Empty');
-    }
+    await this.notificationService.deleteAllPatientNotifications(user);
     return {
       message: 'notifications deleted successfully',
       success: true,
