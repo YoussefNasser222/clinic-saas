@@ -13,6 +13,8 @@ import { UploadModule } from './common/upload/upload.module';
 import { MedicalRecordModule } from './modules/medical-record/medical-record.module';
 import { NotificationModule } from './modules/notification/notification.module';
 import devConfig from '@config/env/dev.config';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -26,8 +28,8 @@ import devConfig from '@config/env/dev.config';
       useFactory: (configService: ConfigService) => {
         return {
           uri: configService.get('DB_URL'),
-        }
-      }
+        };
+      },
     }),
     AuthModule,
     DoctorModule,
@@ -37,8 +39,20 @@ import devConfig from '@config/env/dev.config';
     UploadModule,
     MedicalRecordModule,
     NotificationModule,
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60000,
+        limit: 10,
+      },
+    ]),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
-export class AppModule { }
+export class AppModule {}

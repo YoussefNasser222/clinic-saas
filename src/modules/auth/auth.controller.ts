@@ -1,9 +1,9 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Paid, User } from '@common/decorators';
+import { Body, Controller, Post } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { AuthService } from './auth.service';
 import { CreateDoctorDto, CreatePatientDto, LoginDto, ResetPasswordDto } from './dto/create-auth.dto';
 import { AuthFactoryService } from './factory';
-import { Auth, Paid, User } from '@common/decorators';
-import { IsPaid } from '@common/guards';
 
 @Controller('auth')
 export class AuthController {
@@ -11,7 +11,8 @@ export class AuthController {
     private readonly authFactoryService: AuthFactoryService
   ) { }
   @Post('register/doctor')
-  async createDoctor(@Body() createDoctorDto: CreateDoctorDto) {
+  @Throttle({ default: { ttl: 60000, limit: 10 } })
+  async createDoctor(@Body() createDoctorDto: CreateDoctorDto): Promise<{ message: string; success: boolean; data: { createdDoctor: { phoneNumber: string; firstName: string; lastName: string; clinicId: import("mongoose").Types.ObjectId; _id: import("mongoose").Types.ObjectId; email: string; role: import("../../models").Role; nationalId: string; __v: number; }; }; }> {
     const doctor = await this.authFactoryService.createDoctor(createDoctorDto)
     const createdDoctor = await this.authService.createDoctor(doctor);
     return {
@@ -22,6 +23,7 @@ export class AuthController {
   }
   @Post('register/patient')
   @Paid(['Doctor'])
+  @Throttle({ default: { ttl: 60000, limit: 10 } })
   async createPatient(@Body() createPatientDto: CreatePatientDto , @User() user : any ) {
     const patient = await this.authFactoryService.createPatient(createPatientDto , user)
     const createdPatient = await this.authService.createPatient(patient);
@@ -32,6 +34,7 @@ export class AuthController {
     }
   }
   @Post('login')
+  @Throttle({ default: { ttl: 60000, limit: 10 } })
   async login(@Body() loginDto : LoginDto){
  const result = await this.authService.login(loginDto)
  return {
@@ -50,6 +53,7 @@ export class AuthController {
     }
   }
   @Post('send-otp')
+  @Throttle({ default: { ttl: 60000, limit: 10 } })
   async sendOtp(@Body('email') email: string) {
     await this.authService.sendOtp(email);
     return {
@@ -58,6 +62,7 @@ export class AuthController {
     }
   }
   @Post('reset-password')
+  @Throttle({ default: { ttl: 60000, limit: 10 } })
   async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
      await this.authService.resetPassword(resetPasswordDto);
     return {

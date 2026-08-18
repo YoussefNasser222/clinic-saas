@@ -19,6 +19,7 @@ import { UploadService } from '@common/upload';
 import { PrescriptionExtractorService } from './prescription-extractor.service';
 import { log } from 'console';
 import { MedicalRecordFactoryService } from './factory';
+import { Throttle } from '@nestjs/throttler';
 
 @Controller('medical-record')
 export class MedicalRecordController {
@@ -29,10 +30,10 @@ export class MedicalRecordController {
   @Post('extract')
   @Paid(['Doctor'])
   @UseInterceptors(FileInterceptor('image'))
+  @Throttle({ default: { ttl: 60000, limit: 5 } })
   async extractPrescription(@UploadedFile() file: Express.Multer.File) {
     const { uploaded, extracted } =
       await this.medicalRecordService.extractPrescription(file);
-    log(uploaded);
     return {
       message: 'extracted successfully, please review before saving',
       success: true,
