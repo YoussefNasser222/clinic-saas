@@ -80,6 +80,7 @@ export class AuthService {
         expiresIn: '7d',
       } as JwtSignOptions,
     );
+    await this.tokenRepo.deleteMany({ userId: user._id });
     await this.tokenRepo.create({
       userId: user._id,
       refreshToken,
