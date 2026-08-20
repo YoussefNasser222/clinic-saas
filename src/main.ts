@@ -5,6 +5,9 @@ import { GlobalExceptionFilter } from '@common/filters';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.enableCors({
+    origin : ["https://medical-clinic-saas.vercel.app"]
+  })
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
