@@ -32,7 +32,7 @@ export class MedicalRecordService {
     }
     const uploaded = await this.uploadService.uploadFileToCloud(
       file,
-      `Multi-Tenet/prescriptions/${user._id}`,
+      `Multi-Tenant/prescriptions/${user._id}`,
     );
     const extracted = await this.prescriptionExtractorService.extractFromImage(
       file.buffer,

@@ -104,7 +104,7 @@ export class DoctorController {
   }
   @Put('profile-image')
   @UseInterceptors(FileInterceptor('image'))
-  @Auth(['Doctor'])
+  @Paid(["Doctor"])
   async updateProfileImage(@UploadedFile() file: Express.Multer.File, @User() user: any) {
     const result = await this.doctorService.updateProfileImage(file, user);
     return {

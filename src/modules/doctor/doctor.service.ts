@@ -105,14 +105,11 @@ export class DoctorService {
     return deletedUser;
   }
   async updateProfileImage(file: Express.Multer.File, user: any) {
-    if (user.image) {
-      await this.uploadService.deleteFileFromCloud(user.image.public_id);
-    }
     const upload = await this.uploadService.uploadFileToCloud(
       file,
-      `Multi-Tenet/profile-image/${user._id}`,
+      `Multi-Tenant/profile-image/${user._id}`,
     );
-    return await this.doctorRepo.update(
+    const updatedDoctor = await this.doctorRepo.update(
       { _id: user._id },
       {
         image: {
@@ -122,5 +119,9 @@ export class DoctorService {
       },
       { returnDocument: 'after' },
     );
+    if (user.image) {
+      await this.uploadService.deleteFileFromCloud(user.image.public_id);
+    }
+    return updatedDoctor
   }
 }
