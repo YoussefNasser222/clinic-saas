@@ -15,6 +15,7 @@ import { NotificationModule } from './modules/notification/notification.module';
 import devConfig from '@config/env/dev.config';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { ClinicModule } from './modules/clinic/clinic.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { APP_GUARD } from '@nestjs/core';
         limit: 10,
       },
     ]),
+    ClinicModule,
   ],
   controllers: [AppController],
   providers: [

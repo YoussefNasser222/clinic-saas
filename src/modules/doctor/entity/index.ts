@@ -14,4 +14,5 @@ export class Clinic {
   specialization: string;
   consultationPrice: number;
   workingDays: WorkingDay[]
+  address : string
 }

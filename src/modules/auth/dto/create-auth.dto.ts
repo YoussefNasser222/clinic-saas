@@ -1,15 +1,18 @@
+import { IsEgyptianNationalId, IsEgyptianPhone } from '@common/validator';
 import {
-    IsEmail,
-    IsNotEmpty,
-    IsString,
-    Length,
-    MinLength
+  IsEmail,
+  IsNotEmpty,
+  IsString,
+  Length,
+  Matches,
+  MinLength,
 } from 'class-validator';
+
 
 export class CreateDoctorDto {
   @IsString()
   @IsNotEmpty()
-  @Length(14, 14)
+  @IsEgyptianNationalId()
   nationalId: string;
   @IsString()
   @IsNotEmpty()
@@ -25,14 +28,14 @@ export class CreateDoctorDto {
   email: string;
   @IsString()
   @IsNotEmpty()
-  @Length(11, 11)
+  @IsEgyptianPhone()
   phoneNumber: string;
 }
 
 export class CreatePatientDto {
   @IsString()
   @IsNotEmpty()
-  @Length(14, 14)
+  @IsEgyptianNationalId()
   nationalId: string;
   @IsString()
   @IsNotEmpty()
@@ -46,16 +49,16 @@ export class CreatePatientDto {
   password: string;
   @IsString()
   @IsNotEmpty()
-  @Length(11, 11)
+  @IsEgyptianPhone()
   phoneNumber: string;
   @IsEmail()
   email: string;
 }
 
 export class LoginDto {
-   @IsString()
+  @IsString()
   @IsNotEmpty()
-  @Length(14, 14)
+  @IsEgyptianNationalId()
   nationalId: string;
   @IsString()
   @IsNotEmpty()

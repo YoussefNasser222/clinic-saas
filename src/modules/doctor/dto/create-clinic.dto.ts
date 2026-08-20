@@ -58,4 +58,7 @@ export class CreateClinicDto {
   @Type(() => WorkingDayDto)
   @ValidateNested({ each: true })
   workingDays: WorkingDayDto[];
+  @IsOptional()
+  @IsString()
+  address : string
 }

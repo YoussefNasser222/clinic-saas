@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import { Types } from 'mongoose';
 import { Clinic } from './entity';
+import { UploadService } from '@common/upload';
 
 @Injectable()
 export class DoctorService {
@@ -18,6 +19,7 @@ export class DoctorService {
     private readonly doctorRepo: DoctorRepository,
     private readonly clinicRepo: ClinicRepository,
     private readonly patientRepo: PatientRepository,
+    private readonly uploadService: UploadService,
   ) {}
 
   async findOne(id: string) {
@@ -92,12 +94,33 @@ export class DoctorService {
       updatedPatient?.toObject() || {};
     return other;
   }
-  async deleteDoctor(user : any){
+  async deleteDoctor(user: any) {
     const deletedUser = await this.doctorRepo.deleteOne({ _id: user._id });
-    const deleteClinic = await this.clinicRepo.deleteOne({ doctorId: user._id });
-    if(deletedUser.deletedCount === 0){
+    const deleteClinic = await this.clinicRepo.deleteOne({
+      doctorId: user._id,
+    });
+    if (deletedUser.deletedCount === 0) {
       throw new NotFoundException('Doctor not found');
     }
     return deletedUser;
+  }
+  async updateProfileImage(file: Express.Multer.File, user: any) {
+    if (user.image) {
+      await this.uploadService.deleteFileFromCloud(user.image.public_id);
+    }
+    const upload = await this.uploadService.uploadFileToCloud(
+      file,
+      `Multi-Tenet/profile-image/${user._id}`,
+    );
+    return await this.doctorRepo.update(
+      { _id: user._id },
+      {
+        image: {
+          public_id: upload.public_id,
+          secure_url: upload.secure_url,
+        },
+      },
+      { returnDocument: 'after' },
+    );
   }
 }

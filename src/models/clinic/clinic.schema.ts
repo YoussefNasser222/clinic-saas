@@ -36,6 +36,8 @@ export class Clinic {
   consultationPrice: number;
   @Prop({ type: [WorkingDay] })
   workingDays: WorkingDay[];
+  @Prop({type : String})
+  address : string 
 }
 
 export const clinicSchema = SchemaFactory.createForClass(Clinic);

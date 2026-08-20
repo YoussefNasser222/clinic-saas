@@ -1,3 +1,4 @@
+import { generateOtp, generateOtpExpire, sendMail } from '@common/helpers';
 import {
   DoctorRepository,
   PatientRepository,
@@ -15,8 +16,6 @@ import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { LoginDto, ResetPasswordDto } from './dto/create-auth.dto';
 import { Doctor, Patient } from './entities/auth.entity';
-import { generateOtp, generateOtpExpire, sendMail } from '@common/helpers';
-import { log } from 'console';
 
 @Injectable()
 export class AuthService {

@@ -1,6 +1,13 @@
 import { User } from "@models/common/user.schema";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { SchemaTypes, Types } from "mongoose";
+@Schema({_id : false})
+export class ImageType{
+    @Prop({type : String})
+    public_id : string;
+    @Prop({type : String})
+    secure_url : string
+}
 
 @Schema({ timestamps: true, discriminatorKey: 'role' })
 export class Doctor extends User {
@@ -16,6 +23,8 @@ export class Doctor extends User {
     lastName: string;
     @Prop({ type: SchemaTypes.ObjectId, ref : "Clinic" })
     clinicId: Types.ObjectId;
+    @Prop({type : ImageType})
+    image : ImageType
 }
 
 export const doctorSchema = SchemaFactory.createForClass(Doctor)

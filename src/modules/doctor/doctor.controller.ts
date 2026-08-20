@@ -1,4 +1,4 @@
-import { Paid, User } from '@common/decorators';
+import { Auth, Paid, User } from '@common/decorators';
 import {
   UpdatedDoctorDto
 } from '@modules/auth/dto/update-auth.dto';
@@ -8,12 +8,16 @@ import {
   Delete,
   Get,
   Post,
-  Put
+  Put,
+  UploadedFile,
+  UseInterceptors
 } from '@nestjs/common';
 import { DoctorService } from './doctor.service';
 import { CreateClinicDto } from './dto/create-clinic.dto';
 import { UpdatedClinicDto } from './dto/update-clinic.dto';
 import { DoctorFactoryService } from './factory';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { log } from 'console';
 
 @Controller('doctor')
 export class DoctorController {
@@ -96,6 +100,20 @@ export class DoctorController {
     return {
       message: 'doctor Deleted successfully',
       success: true,
+    };
+  }
+  @Put('profile-image')
+  @UseInterceptors(FileInterceptor('image'))
+  @Auth(['Doctor'])
+  async updateProfileImage(@UploadedFile() file: Express.Multer.File, @User() user: any) {
+    const result = await this.doctorService.updateProfileImage(file, user);
+    return {
+      message: 'profile-image updated successfully',
+      success: true,
+      data: {
+        public_id: result?.image?.public_id,
+        secure_url: result?.image?.secure_url,
+      },
     };
   }
 }

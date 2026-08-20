@@ -12,7 +12,7 @@ export class Doctor {
     paidExpired: Date;
     otp: string;
     otpExpired: Date;
-    clinicId? : Types.ObjectId 
+    clinicId? : Types.ObjectId
 }
 
 export class Patient {
@@ -26,5 +26,4 @@ export class Patient {
     otp: string;
     otpExpired: Date;
     createdBy: Types.ObjectId;
-    
 }

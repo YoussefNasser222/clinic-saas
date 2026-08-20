@@ -31,9 +31,9 @@ export class MedicalRecordController {
   @Paid(['Doctor'])
   @UseInterceptors(FileInterceptor('image'))
   @Throttle({ default: { ttl: 60000, limit: 5 } })
-  async extractPrescription(@UploadedFile() file: Express.Multer.File) {
+  async extractPrescription(@UploadedFile() file: Express.Multer.File , @User() user : any) {
     const { uploaded, extracted } =
-      await this.medicalRecordService.extractPrescription(file);
+      await this.medicalRecordService.extractPrescription(file , user);
     return {
       message: 'extracted successfully, please review before saving',
       success: true,

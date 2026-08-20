@@ -3,18 +3,14 @@ import {
   DoctorRepository,
   PatientRepository,
 } from '@models/index';
-import {
-  UpdatedDoctorDto,
-  UpdatedPatientDto,
-} from '@modules/auth/dto/update-auth.dto';
-import { Doctor, Patient } from '@modules/auth/entities/auth.entity';
+import { UpdatedDoctorDto } from '@modules/auth/dto/update-auth.dto';
+import { Doctor } from '@modules/auth/entities/auth.entity';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { Types } from 'mongoose';
 import { CreateClinicDto } from '../dto/create-clinic.dto';
-import { Clinic } from '../entity';
 import { UpdatedClinicDto } from '../dto/update-clinic.dto';
-import { log } from 'console';
+import { Clinic } from '../entity';
 @Injectable()
 export class DoctorFactoryService {
   constructor(
@@ -60,6 +56,7 @@ export class DoctorFactoryService {
     clinic.consultationPrice = createClinicDto.consultationPrice;
     clinic.doctorId = doctor._id;
     clinic.workingDays = createClinicDto.workingDays;
+    clinic.address = createClinicDto.address || '';
     return clinic;
   }
   async updateClinic(updateClinicDto: UpdatedClinicDto, doctor: any) {
@@ -81,6 +78,7 @@ export class DoctorFactoryService {
       updateClinicDto.consultationPrice || oldClinic.consultationPrice;
     clinic.doctorId = oldClinic.doctorId;
     clinic.workingDays = updateClinicDto.workingDays || oldClinic.workingDays;
+    clinic.address = updateClinicDto.address || oldClinic.address;
 
     return clinic;
   }

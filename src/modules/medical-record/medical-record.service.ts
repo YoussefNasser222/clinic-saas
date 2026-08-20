@@ -23,7 +23,7 @@ export class MedicalRecordService {
     private readonly appointmentRepo: AppointmentRepository,
   ) {}
 
-  async extractPrescription(file: Express.Multer.File) {
+  async extractPrescription(file: Express.Multer.File, user: any) {
     if (!file) {
       throw new NotFoundException('file not found');
     }
@@ -32,7 +32,7 @@ export class MedicalRecordService {
     }
     const uploaded = await this.uploadService.uploadFileToCloud(
       file,
-      'prescriptions',
+      `Multi-Tenet/prescriptions/${user._id}`,
     );
     const extracted = await this.prescriptionExtractorService.extractFromImage(
       file.buffer,
