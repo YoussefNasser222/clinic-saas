@@ -28,7 +28,7 @@ export class DoctorController {
   @Get()
   @Paid(['Doctor'])
   async findOne(@User() user: any) {
-    const doctor = await this.doctorService.findOne(user.id);
+    const doctor = await this.doctorService.findOne(user._id);
     return {
       message: 'data retrieved successfully',
       success: true,
