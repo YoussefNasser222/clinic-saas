@@ -35,6 +35,18 @@ export class DoctorController {
       data: doctor,
     };
   }
+  @Put('clinic/status')
+  @Paid(['Doctor'])
+  async updateStatus(
+    @Body('isActive') isActive: boolean,
+    @User() user: any,
+  ) {
+    await this.doctorService.updateStatus(isActive, user._id);
+    return {
+      message: 'clinic status updated successfully',
+      success: true,
+    };
+  }
   @Put()
   @Paid(['Doctor'])
   async update(@Body() updateDoctorDto: UpdatedDoctorDto, @User() user: any) {

@@ -1,4 +1,6 @@
 import {
+  AppointmentRepository,
+  AppointmentStatus,
   ClinicRepository,
   DoctorRepository,
   PatientRepository,
@@ -20,6 +22,7 @@ export class DoctorService {
     private readonly clinicRepo: ClinicRepository,
     private readonly patientRepo: PatientRepository,
     private readonly uploadService: UploadService,
+    private readonly appointmentRepo :  AppointmentRepository
   ) {}
 
   async findOne(id: string) {
@@ -122,6 +125,29 @@ export class DoctorService {
     if (user.image) {
       await this.uploadService.deleteFileFromCloud(user.image.public_id);
     }
-    return updatedDoctor
+    return updatedDoctor;
+  }
+  async updateStatus(isActive: boolean, doctorId: string) {
+    const updatedDoctor = await this.clinicRepo.update(
+      { doctorId },
+      { isActive },
+      { returnDocument: 'after' },
+    );
+    if (!isActive) {
+      await this.appointmentRepo.updateMany(
+        {
+          doctorId: doctorId,
+          status: {
+            $in: [
+              AppointmentStatus.PENDING,
+              AppointmentStatus.CONFIRMED,
+              AppointmentStatus.WAITLISTED,
+            ],
+          },
+        },
+        { status: AppointmentStatus.CANCELLED },
+      );
+    }
+    return updatedDoctor;
   }
 }

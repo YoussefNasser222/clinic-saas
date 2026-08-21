@@ -1,8 +1,8 @@
-import { WorkingDay } from "@models/index";
-import { Types } from "mongoose";
+import { BookingType, WorkingDay } from '@models/index';
+import { Types } from 'mongoose';
 
 export class Clinic {
- readonly _id: Types.ObjectId;
+  readonly _id: Types.ObjectId;
   doctorId: Types.ObjectId;
   name: string;
   description?: string;
@@ -13,6 +13,10 @@ export class Clinic {
   city: string;
   specialization: string;
   consultationPrice: number;
-  workingDays: WorkingDay[]
-  address : string
+  workingDays: WorkingDay[];
+  address: string;
+  isActive: boolean;
+  bookingType: BookingType;
+  slotDuration?: number;
+  maxPatientsPerDay: number;
 }

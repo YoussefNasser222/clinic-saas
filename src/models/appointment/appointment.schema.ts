@@ -6,6 +6,7 @@ export enum AppointmentStatus {
   CONFIRMED = 'confirmed',
   COMPLETED = 'completed',
   CANCELLED = 'cancelled',
+  WAITLISTED = 'waitlisted',
 }
 @Schema({ timestamps: true })
 export class Appointment {
@@ -18,10 +19,10 @@ export class Appointment {
   clinicId: Types.ObjectId;
   @Prop({ type: Date, required: true })
   date: Date;
-  @Prop({ type: Date, required: true })
-  startTime: Date;
-  @Prop({ type: Date, required: true })
-  endTime: Date;
+  @Prop({ type: Date })
+  startTime ?: Date;
+  @Prop({ type: Date })
+  endTime ?: Date;
   @Prop({
     type: String,
     enum: AppointmentStatus,
@@ -31,6 +32,8 @@ export class Appointment {
   status: AppointmentStatus;
   @Prop({ type: String })
   notes?: string;
+  @Prop({ type: Number })
+  queueNumber?: number;
 }
 
 export const appointmentSchema = SchemaFactory.createForClass(Appointment);

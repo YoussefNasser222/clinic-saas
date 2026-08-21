@@ -57,6 +57,12 @@ export class DoctorFactoryService {
     clinic.doctorId = doctor._id;
     clinic.workingDays = createClinicDto.workingDays;
     clinic.address = createClinicDto.address || '';
+
+    // ✅ الحقول اللي كانت ناقصة
+    clinic.bookingType = createClinicDto.bookingType;
+    clinic.slotDuration = createClinicDto.slotDuration;
+    clinic.maxPatientsPerDay = createClinicDto.maxPatientsPerDay;
+
     return clinic;
   }
   async updateClinic(updateClinicDto: UpdatedClinicDto, doctor: any) {
@@ -79,6 +85,11 @@ export class DoctorFactoryService {
     clinic.doctorId = oldClinic.doctorId;
     clinic.workingDays = updateClinicDto.workingDays || oldClinic.workingDays;
     clinic.address = updateClinicDto.address || oldClinic.address;
+
+    clinic.bookingType = updateClinicDto.bookingType ?? oldClinic.bookingType;
+    clinic.slotDuration = updateClinicDto.slotDuration ?? oldClinic.slotDuration;
+    clinic.maxPatientsPerDay =
+      updateClinicDto.maxPatientsPerDay ?? oldClinic.maxPatientsPerDay;
 
     return clinic;
   }

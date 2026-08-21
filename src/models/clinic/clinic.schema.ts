@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Type } from 'class-transformer';
 import { SchemaTypes, Types } from 'mongoose';
-@Schema({ _id: false  })
+@Schema({ _id: false })
 export class WorkingDay {
   @Prop({ type: String, required: true })
   day: string;
@@ -9,6 +9,11 @@ export class WorkingDay {
   from: Date;
   @Prop({ type: Date, required: true })
   to: Date;
+}
+
+export enum BookingType {
+  QUEUE = 'queue',
+  TIME = 'time',
 }
 
 @Schema({ timestamps: true })
@@ -36,8 +41,23 @@ export class Clinic {
   consultationPrice: number;
   @Prop({ type: [WorkingDay] })
   workingDays: WorkingDay[];
-  @Prop({type : String})
-  address : string 
+  @Prop({ type: String })
+  address: string;
+  @Prop({ type: Boolean, default: true })
+  isActive: boolean;
+  @Prop({
+    type: String,
+    enum: BookingType,
+    required: true,
+    default: BookingType.TIME,
+  })
+  bookingType: BookingType;
+
+  @Prop({ type: Number })
+  slotDuration?: number; 
+
+  @Prop({ type: Number, required: true, default: 20 })
+  maxPatientsPerDay: number;
 }
 
 export const clinicSchema = SchemaFactory.createForClass(Clinic);

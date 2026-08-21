@@ -1,14 +1,19 @@
+import { BookingType } from '@models/index';
 import { Transform, Type } from 'class-transformer';
 import {
-    IsArray,
-    IsDate,
+  IsArray,
+  IsDate,
   IsEmail,
+  IsEnum,
+  IsInt,
   IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
   Length,
+  Min,
   MinDate,
+  ValidateIf,
   ValidateNested,
 } from 'class-validator';
 
@@ -16,7 +21,7 @@ export class WorkingDayDto {
   @IsString()
   @IsNotEmpty()
   day: string;
-  
+
   @Transform(({ value }) => new Date(value))
   @IsDate()
   from: Date;
@@ -60,5 +65,16 @@ export class CreateClinicDto {
   workingDays: WorkingDayDto[];
   @IsOptional()
   @IsString()
-  address : string
+  address: string;
+  @IsEnum(BookingType)
+  bookingType: BookingType;
+
+  @ValidateIf((o) => o.bookingType === BookingType.TIME)
+  @IsInt()
+  @Min(5)
+  slotDuration?: number;
+
+  @IsInt()
+  @Min(1)
+  maxPatientsPerDay: number;
 }

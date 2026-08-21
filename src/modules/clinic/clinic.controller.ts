@@ -1,4 +1,4 @@
-import { Controller, Param } from '@nestjs/common';
+import { Controller, Param, Query } from '@nestjs/common';
 import { ClinicService } from './clinic.service';
 import { Get } from '@nestjs/common';
 import { Public } from '@common/decorators';
@@ -29,4 +29,11 @@ export class ClinicController {
       data: { clinics },
     };
   }
+  @Get(':id/slots')
+@Public()
+@SkipThrottle()
+async getSlots(@Param('id') id: string, @Query('date') date: string) {
+  const result = await this.clinicService.getAvailableSlots(id, date);
+  return { message: 'data retrieved successfully', success: true, data: result };
+}
 }

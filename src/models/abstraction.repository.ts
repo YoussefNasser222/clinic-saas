@@ -45,11 +45,9 @@ export class AbstractRepository<T> {
     projection?: ProjectionType<T>,
     options?: QueryOptions<T>,
   ): Promise<HydratedDocument<T>[]> {
-    return this.model.find(
-      filter,
-      projection,
-      options,
-    ) as unknown as Promise<HydratedDocument<T>[]>;
+    return this.model.find(filter, projection, options) as unknown as Promise<
+      HydratedDocument<T>[]
+    >;
   }
 
   public async count(filter: QueryFilter<T> = {}): Promise<number> {
@@ -62,5 +60,11 @@ export class AbstractRepository<T> {
 
   public async deleteMany(filter: QueryFilter<T>): Promise<DeleteResult> {
     return this.model.deleteMany(filter);
+  }
+  public async updateMany(
+    filter: QueryFilter<T>,
+    updateQuery: UpdateQuery<T>,
+  ): Promise<any> {
+    return this.model.updateMany(filter, updateQuery);
   }
 }

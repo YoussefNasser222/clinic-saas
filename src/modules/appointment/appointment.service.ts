@@ -20,7 +20,8 @@ export class AppointmentService {
     private readonly doctorRepo: DoctorRepository,
   ) {}
 
-  async createAppointment(appointment: Appointment) {
+ async createAppointment(appointment: Appointment) {
+  if (appointment.startTime && appointment.endTime) {
     const appointmentExist = await this.appointmentRepo.getOne({
       doctorId: appointment.doctorId,
       startTime: { $lt: appointment.endTime },
@@ -30,8 +31,9 @@ export class AppointmentService {
     if (appointmentExist) {
       throw new ConflictException('Appointment already exists');
     }
-    return await this.appointmentRepo.create(appointment);
   }
+  return await this.appointmentRepo.create(appointment);
+}
   
   async deleteAppointment(user: any, id: string) {
     const appointment = await this.appointmentRepo.deleteOne({
