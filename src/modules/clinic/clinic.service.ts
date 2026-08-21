@@ -14,11 +14,13 @@ export class ClinicService {
         populate: {
           path: 'doctorId',
           select: 'firstName lastName image',
+          match: { isPaid: true },
         },
       },
     );
-    if (!clinics || clinics.length == 0) return [];
-    return clinics;
+    const paidClinics = clinics.filter((c) => c.doctorId !== null);
+    if (!paidClinics || paidClinics.length == 0) return [];
+    return paidClinics;
   }
   async getClinicById(id: string) {
     const clinic = await this.clinicRepo.getOne({ _id: id },{},{
