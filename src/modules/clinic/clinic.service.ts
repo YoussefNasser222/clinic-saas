@@ -14,7 +14,7 @@ export class ClinicService {
         populate: {
           path: 'doctorId',
           select: 'firstName lastName image',
-          match: { isPaid: true },
+          match: { paidExpired: { $gt: new Date() } },
         },
       },
     );
