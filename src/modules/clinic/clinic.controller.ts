@@ -7,16 +7,27 @@ import { SkipThrottle } from '@nestjs/throttler';
 @Controller('clinic')
 export class ClinicController {
   constructor(private readonly clinicService: ClinicService) {}
-   @Get(':id')
+  @Get(':id/slots')
   @Public()
   @SkipThrottle()
-  async getClinicById(@Param('id') id : string){
-    const clinic = await this.clinicService.getClinicById(id)
+  async getSlots(@Param('id') id: string, @Query('date') date: string) {
+    const result = await this.clinicService.getAvailableSlots(id, date);
     return {
-      message : 'data retrieved successfully',
-      success : true ,
-      data : {clinic}
-    }
+      message: 'data retrieved successfully',
+      success: true,
+      data: result,
+    };
+  }
+  @Get(':id')
+  @Public()
+  @SkipThrottle()
+  async getClinicById(@Param('id') id: string) {
+    const clinic = await this.clinicService.getClinicById(id);
+    return {
+      message: 'data retrieved successfully',
+      success: true,
+      data: { clinic },
+    };
   }
   @Get()
   @Public()
@@ -29,11 +40,4 @@ export class ClinicController {
       data: { clinics },
     };
   }
-  @Get(':id/slots')
-@Public()
-@SkipThrottle()
-async getSlots(@Param('id') id: string, @Query('date') date: string) {
-  const result = await this.clinicService.getAvailableSlots(id, date);
-  return { message: 'data retrieved successfully', success: true, data: result };
-}
 }
